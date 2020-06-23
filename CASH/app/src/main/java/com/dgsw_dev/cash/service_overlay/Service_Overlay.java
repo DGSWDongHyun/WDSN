@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -28,6 +29,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     private float prevX;
     private float prevY;
     View mView;
+    int Prev_Width, Prev_Height;
     Animation fab_open, fab_close;
     FloatingActionButton fab_opener,fab;
     CardView cardView, today, tomrrow, after_tomorrow, add;
@@ -143,7 +145,6 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                 float y = rawY - prevY;
 
                 setCoordinateUpdate(y);
-
                 prevY = rawY;
                 break;
         }
@@ -168,6 +169,9 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         today = mView.findViewById(R.id.today_card);
         tomrrow = mView.findViewById(R.id.tomorrow_card);
         after_tomorrow = mView.findViewById(R.id.next_tomorrow_card);
+
+        Prev_Width = fab_opener.getWidth();
+        Prev_Height = fab_opener.getHeight();
 
         //버튼 상태 초기화(닫혀있어라!)
         fab.startAnimation(fab_close);
