@@ -92,7 +92,6 @@
                                     android:orientation="vertical">
 
                                     <TextView
-                                        android:id="@+id/textView12"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="오늘"
@@ -120,7 +119,6 @@
                                     android:orientation="vertical">
 
                                     <TextView
-                                        android:id="@+id/textView12"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:text="내일"
@@ -164,6 +162,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="5dp" />
 
+                        <TimePicker
+                            android:id="@+id/time_picker"
+                            android:layout_width="match_parent"
+                            android:layout_height="88dp"
+                            android:layout_gravity="center_horizontal"
+                            android:timePickerMode="spinner" />
+
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -171,18 +176,6 @@
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="10dp" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="225dp"
-                    android:layout_height="wrap_content">
-
-                    <TimePicker
-                        android:id="@+id/time_picker"
-                        android:layout_width="match_parent"
-                        android:layout_height="88dp"
-                        android:layout_gravity="center_horizontal"
-                        android:timePickerMode="spinner" />
-                </androidx.cardview.widget.CardView>
 
                 <Space
                     android:layout_width="match_parent"
@@ -220,8 +213,8 @@
             android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -233,14 +226,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    app:fabSize="mini"
-                    app:srcCompat="?android:attr/fingerprintAuthDrawable" />
-
-                <LinearLayout
-                    android:id="@+id/linear"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:orientation="vertical"></LinearLayout>
+                    app:fabSize="mini" />
 
             </RelativeLayout>
 

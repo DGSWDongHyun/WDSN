@@ -40,7 +40,7 @@
                         android:id="@+id/time_img"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        app:srcCompat="@drawable/w_afternoon" />
+                        app:srcCompat="@drawable/w_sunny" />
 
                     <Space
                         android:layout_width="match_parent"
@@ -88,7 +88,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView"
+                        android:id="@+id/time_subject"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="NULL"

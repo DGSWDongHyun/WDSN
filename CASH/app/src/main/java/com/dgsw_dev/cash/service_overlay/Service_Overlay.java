@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,10 +28,9 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     private float prevX;
     private float prevY;
     View mView;
-    LinearLayout linearLayout;
     Animation fab_open, fab_close;
     FloatingActionButton fab_opener,fab;
-    CardView cardView;
+    CardView cardView, today, tomrrow, after_tomorrow, add;
     WindowManager.LayoutParams params;
     Boolean openFlag = false;
     Boolean fab_opening = true;
@@ -63,32 +63,8 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             params.gravity = Gravity.RIGHT | Gravity.TOP;
             mView = inflate.inflate(R.layout.overlay_service, null);
 
-            fab = mView.findViewById(R.id.close_fab);
-            fab_opener = mView.findViewById(R.id.fab_open);
-            cardView = mView.findViewById(R.id.card_view);
-            linearLayout = mView.findViewById(R.id.linear);
+            init_Layout();
 
-            //버튼 상태 초기화(닫혀있어라!)
-            fab.startAnimation(fab_close);
-            cardView.startAnimation(fab_close);
-            fab.setClickable(false);
-
-
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    anim();
-                    stopSelf();
-                }
-            });
-            fab_opener.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    anim();
-                }
-            });
-
-            mView.setOnTouchListener(this);
             wm.addView(mView, params);
         }else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
           params = new WindowManager.LayoutParams(
@@ -102,30 +78,8 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             params.gravity = Gravity.RIGHT | Gravity.TOP;
             mView = inflate.inflate(R.layout.overlay_service, null);
 
-            fab = mView.findViewById(R.id.close_fab);
-            fab_opener = mView.findViewById(R.id.fab_open);
-            cardView = mView.findViewById(R.id.card_view);
-            linearLayout = mView.findViewById(R.id.linear);
+            init_Layout();
 
-            fab.startAnimation(fab_close);
-            cardView.startAnimation(fab_close);
-            fab.setClickable(false);
-
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    anim();
-                    stopSelf();
-                }
-            });
-            fab_opener.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    anim();
-                }
-            });
-
-            mView.setOnTouchListener(this);
             wm.addView(mView, params);
         }
 
@@ -151,16 +105,26 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         if (openFlag) {
             fab.startAnimation(fab_close);
             cardView.startAnimation(fab_close);
+            new Handler().postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    fab.setVisibility(View.GONE);
+                    cardView.setVisibility(View.GONE);
+                }
+            }, 600);
             fab.setClickable(false);
             openFlag = false;
-            linearLayout.setVisibility(View.VISIBLE);
 
         } else {
             fab.startAnimation(fab_open);
+            fab.setVisibility(View.VISIBLE);
             cardView.startAnimation(fab_open);
+            cardView.setVisibility(View.VISIBLE);
             fab.setClickable(true);
             openFlag = true;
-            linearLayout.setVisibility(View.GONE);
+
 
         }
     }
@@ -196,5 +160,39 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
 
             wm.updateViewLayout(mView, params);
         }
+    }
+    public void init_Layout(){
+        fab = mView.findViewById(R.id.close_fab);
+        fab_opener = mView.findViewById(R.id.fab_open);
+        cardView = mView.findViewById(R.id.card_view);
+        today = mView.findViewById(R.id.today_card);
+        tomrrow = mView.findViewById(R.id.tomorrow_card);
+        after_tomorrow = mView.findViewById(R.id.next_tomorrow_card);
+
+        //버튼 상태 초기화(닫혀있어라!)
+        fab.startAnimation(fab_close);
+        cardView.startAnimation(fab_close);
+        cardView.setVisibility(View.GONE);
+        fab.setVisibility(View.GONE);
+        fab.setClickable(false);
+
+        fab.setOnClickListener(v->{
+            anim(); stopSelf();
+        });
+        fab_opener.setOnLongClickListener(v->{
+            fab_opener.setOnTouchListener(this);
+            return false;
+        });
+        fab_opener.setOnClickListener(v->{
+            anim();
+        });
+        today.setOnClickListener(v->{
+
+        });
+        tomrrow.setOnClickListener(v->{
+
+        });
+        after_tomorrow.setOnClickListener(v->{});
+
     }
 }
