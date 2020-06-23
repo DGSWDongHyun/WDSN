@@ -9,6 +9,6 @@
 
 - 추가 중 -
 
-:speech_balloon: 본인 블로그 blog.naver.com/ydh665566
+:speech_balloon: 본인 블로그 https://blog.naver.com/ydh665566
 
 
