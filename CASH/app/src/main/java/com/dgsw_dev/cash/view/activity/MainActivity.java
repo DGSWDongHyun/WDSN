@@ -1,4 +1,4 @@
-package com.dgsw_dev.cash;
+package com.dgsw_dev.cash.view.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,9 +8,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.WindowManager;
 
-import com.dgsw_dev.cash.service_overlay.Service_Overlay;
+import com.dgsw_dev.cash.R;
+import com.dgsw_dev.cash.view.service.Service_Overlay;
 
 public class MainActivity extends AppCompatActivity {
     private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 42;

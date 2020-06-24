@@ -1,4 +1,4 @@
-package com.dgsw_dev.cash.service_overlay;
+package com.dgsw_dev.cash.view.service;
 
 import android.app.Service;
 import android.content.Context;
@@ -15,9 +15,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 

@@ -12,13 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".service_overlay.Service_Overlay"
+            android:name=".view.service.Service_Overlay"
             android:enabled="true"
             android:windowSoftInputMode="adjustResize"
             android:permission="android.permission.SYSTEM_ALERT_WINDOW"
             android:exported="true"></service>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".view.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
