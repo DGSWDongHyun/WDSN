@@ -11,7 +11,8 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
+        viewBinding.enabled = true;
+        dataBinding.enabled = true;
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

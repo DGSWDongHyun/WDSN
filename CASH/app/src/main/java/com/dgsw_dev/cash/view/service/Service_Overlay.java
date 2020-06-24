@@ -15,11 +15,18 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 
 import com.dgsw_dev.cash.R;
+import com.dgsw_dev.cash.data.DataSubject;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
+
+import java.util.ArrayList;
 
 public class Service_Overlay extends Service implements View.OnTouchListener {
     WindowManager wm;
@@ -31,9 +38,9 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     FloatingActionButton fab_opener,fab;
     CardView cardView, today, tomrrow, after_tomorrow, add;
     WindowManager.LayoutParams params;
+    ArrayList<DataSubject> list = new ArrayList<>();
     Boolean openFlag = false;
-    Boolean fab_opening = true;
-
+    TextView tv;
     public Service_Overlay() {
     }
 
@@ -166,6 +173,9 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         today = mView.findViewById(R.id.today_card);
         tomrrow = mView.findViewById(R.id.tomorrow_card);
         after_tomorrow = mView.findViewById(R.id.next_tomorrow_card);
+        tv = mView.findViewById(R.id.selected_text);
+
+
 
         Prev_Width = fab_opener.getWidth();
         Prev_Height = fab_opener.getHeight();
@@ -189,11 +199,33 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         });
         today.setOnClickListener(v->{
 
+                text_changed(tv, "오늘");
         });
         tomrrow.setOnClickListener(v->{
-
+                text_changed(tv, "내일");
         });
-        after_tomorrow.setOnClickListener(v->{});
-
+        after_tomorrow.setOnClickListener(v->{
+                text_changed(tv, "모레");
+        });
+    }
+    public void text_changed(TextView tv, String content){
+        switch (content){
+            case "오늘":
+                today.setCardBackgroundColor(getResources().getColor(R.color.green));
+                tomrrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                after_tomorrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                break;
+            case "내일":
+                today.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                tomrrow.setCardBackgroundColor(getResources().getColor(R.color.green));
+                after_tomorrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                break;
+            case "모레":
+                today.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                tomrrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                after_tomorrow.setCardBackgroundColor(getResources().getColor(R.color.green));
+                break;
+        }
+         tv.setText(content);
     }
 }
