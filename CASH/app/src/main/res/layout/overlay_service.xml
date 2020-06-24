@@ -15,7 +15,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/card_view"
             android:layout_width="250dp"
-            android:layout_height="260dp">
+            android:layout_height="280dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -25,22 +25,51 @@
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="225dp"
-                    android:layout_height="40dp">
+                    android:layout_height="65dp">
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/edt_overs"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_overlay"
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="5dp" />
+
+                        <TextView
+                            android:id="@+id/textView"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="과제 내용을 입력하세요."
+                            android:text="  과제를 선택해주세요."
                             android:textColor="@android:color/black"
                             android:textSize="12sp"
                             android:textStyle="bold" />
-                    </com.google.android.material.textfield.TextInputLayout>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="5dp" />
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="200dp"
+                            android:layout_height="30dp">
+
+                            <Button
+                                android:id="@+id/submenu"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@android:color/transparent"
+                                android:text="과제 선택하기"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
+                        </androidx.cardview.widget.CardView>
+
+                        <Space
+                            android:layout_width="match_parent"
+                            android:layout_height="5dp" />
+
+                    </LinearLayout>
+
                 </androidx.cardview.widget.CardView>
 
                 <Space
