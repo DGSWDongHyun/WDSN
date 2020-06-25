@@ -180,6 +180,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         tomrrow = mView.findViewById(R.id.tomorrow_card);
         after_tomorrow = mView.findViewById(R.id.next_tomorrow_card);
         tv = mView.findViewById(R.id.selected_text);
+        add = mView.findViewById(R.id.add_card);
         button_select = mView.findViewById(R.id.submenu);
 
         //버튼 상태 초기화(닫혀있어라!)
@@ -187,6 +188,10 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         fab.setVisibility(View.GONE);
         fab.setClickable(false);
 
+        add.setOnClickListener(v -> {
+            init_dialog();
+            anim();
+        });
         button_select.setOnClickListener(v->{
             PopupMenu p = new PopupMenu(
                     getApplicationContext(), // 현재 화면의 제어권자
@@ -215,7 +220,6 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             anim();
         });
         today.setOnClickListener(v->{
-
                 text_changed(tv, "오늘");
         });
         tomrrow.setOnClickListener(v->{
@@ -244,6 +248,13 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                 break;
         }
          tv.setText(content);
+    }
+    public void init_dialog(){
+        today.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        tomrrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        after_tomorrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        text_changed(tv, "종료일을 선택해주세요.");
+        button_select.setText("과제 선택하기");
     }
     public MenuInflater getMenuInflater() {
         return new MenuInflater(this);
