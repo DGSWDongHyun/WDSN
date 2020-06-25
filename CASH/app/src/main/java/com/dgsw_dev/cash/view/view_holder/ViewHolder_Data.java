@@ -82,11 +82,11 @@ public class ViewHolder_Data extends BaseAdapter {
     }
 
     // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
-    public void addItem(String title, String time, Boolean task_over) {
-        DataSubject item = new DataSubject(title, time, task_over);
+    public void addItem(String title, String time , String Detail, Boolean task_over) {
+        DataSubject item = new DataSubject(title, time, Detail, task_over);
 
         item.setSubjectName(title);
-        item.setToTime(time);
+        item.setToTime(time+" , "+Detail);
         item.setOverTime(task_over);
 
 

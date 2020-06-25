@@ -1,3 +1,5 @@
 package com.dgsw_dev.cash.data
 
-data class DataSubject(var SubjectName : String, var ToTime : String, var OverTime : Boolean)
+import java.util.*
+
+data class DataSubject(var SubjectName : String, var ToTime : String, var Detail_time : String, var OverTime : Boolean)

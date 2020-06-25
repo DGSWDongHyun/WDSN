@@ -1,0 +1,35 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/korean"
+        android:title="국어" >
+    </item>
+    <item
+        android:id="@+id/math"
+        android:title="수학" >
+    </item>
+    <item
+        android:id="@+id/social"
+        android:title="사회" >
+    </item>
+    <item
+        android:id="@+id/science"
+        android:title="과학" >
+    </item>
+    <item
+        android:id="@+id/english"
+        android:title="영어" >
+    </item>
+    <item
+        android:id="@+id/computer"
+        android:title="정보" >
+    </item>
+    <item
+        android:id="@+id/history"
+        android:title="역사" >
+    </item>
+    <item
+        android:id="@+id/etc"
+        android:title="기타 과제" >
+    </item>
+</menu>
+

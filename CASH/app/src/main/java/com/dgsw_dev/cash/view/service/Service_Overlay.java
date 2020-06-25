@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +18,11 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 
@@ -41,6 +46,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     ArrayList<DataSubject> list = new ArrayList<>();
     Boolean openFlag = false;
     TextView tv;
+    Button button_select;
     public Service_Overlay() {
     }
 
@@ -174,21 +180,32 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         tomrrow = mView.findViewById(R.id.tomorrow_card);
         after_tomorrow = mView.findViewById(R.id.next_tomorrow_card);
         tv = mView.findViewById(R.id.selected_text);
-
-
-
-        Prev_Width = fab_opener.getWidth();
-        Prev_Height = fab_opener.getHeight();
+        button_select = mView.findViewById(R.id.submenu);
 
         //버튼 상태 초기화(닫혀있어라!)
-        fab.startAnimation(fab_close);
-        cardView.startAnimation(fab_close);
         cardView.setVisibility(View.GONE);
         fab.setVisibility(View.GONE);
         fab.setClickable(false);
 
+        button_select.setOnClickListener(v->{
+            PopupMenu p = new PopupMenu(
+                    getApplicationContext(), // 현재 화면의 제어권자
+                    v); // anchor : 팝업을 띄울 기준될 위젯
+            getMenuInflater().inflate(R.menu.menu_service, p.getMenu());
+            // 이벤트 처리
+            p.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    button_select.setText(item.getTitle());
+                    return false;
+                }
+            });
+            p.show(); // 메뉴를 띄우기
+        });
+
         fab.setOnClickListener(v->{
-            anim(); stopSelf();
+            anim();
+            stopSelf();
         });
         fab_opener.setOnLongClickListener(v->{
             fab_opener.setOnTouchListener(this);
@@ -227,5 +244,8 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                 break;
         }
          tv.setText(content);
+    }
+    public MenuInflater getMenuInflater() {
+        return new MenuInflater(this);
     }
 }
