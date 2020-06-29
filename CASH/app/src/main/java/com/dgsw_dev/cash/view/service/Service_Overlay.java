@@ -3,6 +3,7 @@ package com.dgsw_dev.cash.view.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Handler;
@@ -22,14 +23,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 
 import com.dgsw_dev.cash.R;
 import com.dgsw_dev.cash.data.DataSubject;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -42,10 +46,13 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     FloatingActionButton fab_opener,fab;
     CardView cardView, today, tomrrow, after_tomorrow, add;
     WindowManager.LayoutParams params;
+    TimePicker times;
     ArrayList<DataSubject> list = new ArrayList<>();
     Boolean openFlag = false;
     TextView tv;
     Button button_select;
+    String dialog = "";
+
     public Service_Overlay() {
     }
 
@@ -53,6 +60,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     public IBinder onBind(Intent intent) {
         return null;
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate() {
         setTheme(R.style.AppTheme);
@@ -170,6 +178,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             wm.updateViewLayout(mView, params);
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void init_Layout(){
         fab = mView.findViewById(R.id.close_fab);
         fab_opener = mView.findViewById(R.id.fab_open);
@@ -180,6 +189,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         tv = mView.findViewById(R.id.selected_text);
         add = mView.findViewById(R.id.add_card);
         button_select = mView.findViewById(R.id.submenu);
+        times = mView.findViewById(R.id.time_picker);
 
         prev_Width = fab.getWidth();
         prev_Height = fab.getHeight();
@@ -251,13 +261,28 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                 break;
         }
          tv.setText(content);
+        dialog = content;
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void init_dialog(){
         today.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         tomrrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         after_tomorrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+        list.add(new DataSubject(button_select.getText().toString(), dialog, " ~"+times.getHour()+":"+times.getMinute()+"까지",false));
+        Toast.makeText(getApplicationContext(), "과제 등록됨 : "+button_select.getText()+", 제출 기한 : "+dialog+ " ~"+times.getHour()+":"+times.getMinute()+"까지",Toast.LENGTH_LONG).show();;
+        saveSharedPreferencesList(getApplicationContext(), list);
+
         text_changed(tv, "종료일을 선택해주세요.");
         button_select.setText("과제 선택하기");
+    }
+    public static void saveSharedPreferencesList(Context context, ArrayList<DataSubject> Subject) {
+        SharedPreferences mPrefs = context.getSharedPreferences("pref",context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(Subject);
+        prefsEditor.putString("Subject_Data", json);
+        prefsEditor.commit();
     }
     public MenuInflater getMenuInflater() {
         return new MenuInflater(this);

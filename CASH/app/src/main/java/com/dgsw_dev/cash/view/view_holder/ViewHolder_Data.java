@@ -47,21 +47,12 @@ public class ViewHolder_Data extends BaseAdapter {
         DataSubject listViewItem = listViewItemList.get(position);
 
         // 아이템 내 각 위젯에 데이터 반영
-        TextView text_now = convertView.findViewById(R.id.time_now);
-        ImageView img_time = convertView.findViewById(R.id.time_img);
-        Date date = new Date();
-        SimpleDateFormat sdformat = new SimpleDateFormat("HH");
 
-        if("12".contains(sdformat.toString())){
-               img_time.setImageResource(R.drawable.w_sunny);
-        }else if("06".contains(sdformat.toString())){
-               img_time.setImageResource(R.drawable.w_afternoon_2);
-        }else if("18".contains(sdformat.toString())){
-                img_time.setImageResource(R.drawable.w_afternoon);
-        }else if("20".contains(sdformat.toString())){
-                img_time.setImageResource(R.drawable.w_night);
-        }
+        TextView subject = convertView.findViewById(R.id.subject);
+        TextView times = convertView.findViewById(R.id.time);
 
+        subject.setText(listViewItem.getSubjectName());
+        times.setText(listViewItem.getDetail_time());
 
         return convertView;
     }
@@ -83,7 +74,7 @@ public class ViewHolder_Data extends BaseAdapter {
         DataSubject item = new DataSubject(title, time, Detail, task_over);
 
         item.setSubjectName(title);
-        item.setToTime(time+" , "+Detail);
+        item.setToTime("제출 기한 : "+time+", ~"+Detail+" 까지");
         item.setOverTime(task_over);
 
 
