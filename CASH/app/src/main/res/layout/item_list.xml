@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="과제가 없습니다! [ ERROR#13 ]"
                 android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:textSize="10sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

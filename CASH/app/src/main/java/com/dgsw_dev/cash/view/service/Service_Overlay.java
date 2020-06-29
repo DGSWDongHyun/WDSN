@@ -35,10 +35,9 @@ import java.util.ArrayList;
 
 public class Service_Overlay extends Service implements View.OnTouchListener {
     WindowManager wm;
-    private float prevX;
     private float prevY;
     View mView;
-    int Prev_Width, Prev_Height;
+    int prev_Width, prev_Height;
     Animation fab_open, fab_close;
     FloatingActionButton fab_opener,fab;
     CardView cardView, today, tomrrow, after_tomorrow, add;
@@ -144,7 +143,6 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: // 처음 위치를 기억해둔다.
-                prevX = event.getRawX();
                 prevY = event.getRawY();
                 break;
 
@@ -182,6 +180,11 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         tv = mView.findViewById(R.id.selected_text);
         add = mView.findViewById(R.id.add_card);
         button_select = mView.findViewById(R.id.submenu);
+
+        prev_Width = fab.getWidth();
+        prev_Height = fab.getHeight();
+
+
 
         //버튼 상태 초기화(닫혀있어라!)
         cardView.setVisibility(View.GONE);

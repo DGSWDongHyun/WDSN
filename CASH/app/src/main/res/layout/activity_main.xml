@@ -65,8 +65,8 @@
                 android:orientation="horizontal">
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="85dp"
-                    android:layout_height="150dp"
+                    android:layout_width="90dp"
+                    android:layout_height="160dp"
                     app:cardCornerRadius="6dp">
 
                     <LinearLayout
@@ -116,8 +116,8 @@
                     android:layout_height="wrap_content" />
 
                 <androidx.cardview.widget.CardView
-                    android:layout_width="210dp"
-                    android:layout_height="150dp"
+                    android:layout_width="220dp"
+                    android:layout_height="160dp"
                     app:cardCornerRadius="6dp">
 
                     <LinearLayout

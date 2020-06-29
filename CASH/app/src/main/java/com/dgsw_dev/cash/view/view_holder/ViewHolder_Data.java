@@ -16,11 +16,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class ViewHolder_Data extends BaseAdapter {
-
-    // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
     private ArrayList<DataSubject> listViewItemList = new ArrayList<DataSubject>() ;
 
-    // ListViewAdapter의 생성자
     public ViewHolder_Data() {
 
     }
