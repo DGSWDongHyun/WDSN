@@ -269,7 +269,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         tomrrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         after_tomorrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
-        list.add(new DataSubject(button_select.getText().toString(), dialog, " ~"+times.getHour()+":"+times.getMinute()+"까지",false));
+        list.add(new DataSubject(button_select.getText().toString(), dialog, " ~ "+times.getHour()+":"+times.getMinute()+"까지",false));
         Toast.makeText(getApplicationContext(), "과제 등록됨 : "+button_select.getText()+", 제출 기한 : "+dialog+ " ~"+times.getHour()+":"+times.getMinute()+"까지",Toast.LENGTH_LONG).show();;
         saveSharedPreferencesList(getApplicationContext(), list);
 

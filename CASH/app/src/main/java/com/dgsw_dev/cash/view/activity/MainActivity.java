@@ -1,6 +1,7 @@
 package com.dgsw_dev.cash.view.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -9,7 +10,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
+import android.view.View;
 import android.widget.ListView;
 
 import com.dgsw_dev.cash.DataBinderMapperImpl;
@@ -23,10 +26,11 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 42;
     ListView listview ;
     ArrayList<DataSubject> list;
+    SwipeRefreshLayout swipe;
     ViewHolder_Data adapter;
 
     @Override
@@ -39,11 +43,13 @@ public class MainActivity extends AppCompatActivity {
 
         // 리스트뷰 참조 및 Adapter달기
         listview = (ListView) findViewById(R.id.list_s);
+        swipe = findViewById(R.id.swipe);
         listview.setAdapter(adapter);
 
 
         for(int index = 0; index < list.size(); index++){
             adapter.addItem(list.get(index).getSubjectName(), list.get(index).getToTime(), list.get(index).getDetail_time(), list.get(index).getOverTime());
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -60,6 +66,19 @@ public class MainActivity extends AppCompatActivity {
             startService(new Intent(MainActivity.this, Service_Overlay.class));
         }
     }
+    @Override
+    public void onRefresh() {
+        swipe.setRefreshing(true);
+        new Handler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                swipe.setRefreshing(false);
+            }
+        }, 200);
+    }
+
     public static ArrayList<DataSubject> loadSharedPreferencesList(Context context) {
         ArrayList<DataSubject> data = new ArrayList<DataSubject>();
         SharedPreferences mPrefs = context.getSharedPreferences("pref", context.MODE_PRIVATE);

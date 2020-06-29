@@ -80,4 +80,7 @@ public class ViewHolder_Data extends BaseAdapter {
 
         listViewItemList.add(item);
     }
+    public void clearAll(){
+        listViewItemList.removeAll(listViewItemList);
+    }
 }

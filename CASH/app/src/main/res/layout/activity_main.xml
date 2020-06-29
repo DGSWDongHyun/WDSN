@@ -120,17 +120,17 @@
                     android:layout_height="160dp"
                     app:cardCornerRadius="6dp">
 
-                    <LinearLayout
+                    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                        android:id="@+id/swipe"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent">
 
                         <ListView
                             android:id="@+id/list_s"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" />
-                    </LinearLayout>
+
+                    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
