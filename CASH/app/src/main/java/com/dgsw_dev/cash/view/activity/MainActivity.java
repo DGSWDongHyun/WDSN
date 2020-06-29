@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dgsw_dev.cash.DataBinderMapperImpl;
 import com.dgsw_dev.cash.R;
@@ -38,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     ViewHolder_Data adapter;
     TextView time_now;
     ImageView img;
+    Date date;
+    SimpleDateFormat simpleDateFormat;
+    public final static int FULLTIME_OF_DAY = 24;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +60,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         time_now = findViewById(R.id.time_now);
         img = findViewById(R.id.time_img);
 
-
-
-
-
+        returnTimes(date, simpleDateFormat);
 
         for(int index = 0; index < list.size(); index++){
             adapter.addItem(list.get(index).getSubjectName(), list.get(index).getToTime(), list.get(index).getDetail_time(), list.get(index).getOverTime());
@@ -79,12 +80,36 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             startService(new Intent(MainActivity.this, Service_Overlay.class));
         }
     }
+    public void returnTimes(Date time, SimpleDateFormat format){
+
+        time = new Date();
+        format = new SimpleDateFormat ( "HH");
+
+        int hour = Integer.parseInt(format.format(time));
+
+        Toast.makeText(getApplicationContext(), String.valueOf(hour), Toast.LENGTH_LONG).show();
+
+        if(hour > 6 && hour <= 12){
+            time_now.setText("아침");
+            img.setImageResource(R.drawable.w_beforenoon_2);
+        }else if(hour > 12 && hour <= 18){
+            time_now.setText("낮");
+            img.setImageResource(R.drawable.w_sunny);
+        }else if(hour > 18 && hour <= 21){
+            time_now.setText("저녁");
+            img.setImageResource(R.drawable.w_afternoon);
+        }else if(hour > 21 || hour <= 6){
+            time_now.setText("밤");
+            img.setImageResource(R.drawable.w_night);
+        }
+    }
     @Override
     public void onRefresh() {
         swipe.setRefreshing(true);
 
         adapter.clearAll();
         list = loadSharedPreferencesList(getApplicationContext());
+        returnTimes(date, simpleDateFormat);
 
         for(int index = 0; index < list.size(); index++){
             adapter.addItem(list.get(index).getSubjectName(), list.get(index).getToTime(), list.get(index).getDetail_time(),list.get(index).getOverTime());
