@@ -34,7 +34,9 @@ import com.dgsw_dev.cash.data.DataSubject;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class Service_Overlay extends Service implements View.OnTouchListener {
@@ -265,6 +267,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void init_dialog(){
+        list = loadSharedPreferencesList(getApplicationContext());
         today.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         tomrrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         after_tomorrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -284,6 +287,21 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         prefsEditor.putString("Subject_Data", json);
         prefsEditor.commit();
     }
+    public static ArrayList<DataSubject> loadSharedPreferencesList(Context context) {
+        ArrayList<DataSubject> data = new ArrayList<DataSubject>();
+        SharedPreferences mPrefs = context.getSharedPreferences("pref", context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("Subject_Data", "");
+        if (json.isEmpty()) {
+            data = new ArrayList<DataSubject>();
+        } else {
+            Type type = new TypeToken<ArrayList<DataSubject>>() {
+            }.getType();
+            data = gson.fromJson(json, type);
+        }
+        return data;
+    }
+
     public MenuInflater getMenuInflater() {
         return new MenuInflater(this);
     }

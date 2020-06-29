@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.dgsw_dev.cash.DataBinderMapperImpl;
 import com.dgsw_dev.cash.R;
@@ -24,7 +26,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
     private static final int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE = 42;
@@ -32,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     ArrayList<DataSubject> list;
     SwipeRefreshLayout swipe;
     ViewHolder_Data adapter;
+    TextView time_now;
+    ImageView img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +50,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         // 리스트뷰 참조 및 Adapter달기
         listview = (ListView) findViewById(R.id.list_s);
         swipe = findViewById(R.id.swipe);
+        swipe.setOnRefreshListener(this);
         listview.setAdapter(adapter);
+
+        time_now = findViewById(R.id.time_now);
+        img = findViewById(R.id.time_img);
+
+
+
+
 
 
         for(int index = 0; index < list.size(); index++){
@@ -52,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             adapter.notifyDataSetChanged();
         }
     }
-
     public void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {   // 마시멜로우 이상일 경우
             if (!Settings.canDrawOverlays(this)) {              // 체크
@@ -69,6 +82,15 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     @Override
     public void onRefresh() {
         swipe.setRefreshing(true);
+
+        adapter.clearAll();
+        list = loadSharedPreferencesList(getApplicationContext());
+
+        for(int index = 0; index < list.size(); index++){
+            adapter.addItem(list.get(index).getSubjectName(), list.get(index).getToTime(), list.get(index).getDetail_time(),list.get(index).getOverTime());
+            adapter.notifyDataSetChanged();
+        }
+
         new Handler().postDelayed(new Runnable()
         {
             @Override
