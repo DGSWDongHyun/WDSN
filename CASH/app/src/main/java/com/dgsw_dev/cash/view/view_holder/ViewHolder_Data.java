@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.dgsw_dev.cash.R;
 import com.dgsw_dev.cash.data.DataSubject;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,9 +52,15 @@ public class ViewHolder_Data extends BaseAdapter {
 
         TextView subject = convertView.findViewById(R.id.subject);
         TextView times = convertView.findViewById(R.id.time);
+        TextView overtime = convertView.findViewById(R.id.overtime);
 
         subject.setText(listViewItem.getSubjectName());
         times.setText(listViewItem.getDetail_time());
+        if(!listViewItem.getOverTime()){
+            overtime.setVisibility(View.VISIBLE);
+        }else{
+            overtime.setVisibility(View.GONE);
+        }
 
         return convertView;
     }

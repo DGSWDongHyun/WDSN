@@ -322,25 +322,14 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                         Date current_data = new Date(System.currentTimeMillis());
                         Date saved_data = new SimpleDateFormat("yyyy/MM/dd HH:mm").parse(list.get(size).getDate());
 
-                        if(saved_data.after(current_data)){
-                            for (int size1 = 0; size1 < list.size(); size1++) {
-                                OverTimedList.add(saved_data);
+                        if(saved_data.after(current_data) && list.get(index).getOverTime()){
+                                list.get(index).setOverTime(true);
                                 Log.e("SUCCESS", saved_data.toString());
-                                for(int index1 = 0; index1 < OverTimedList.size(); index1++){
-                                    Log.e("SUCCESS", OverTimedList.get(index1).toString());
-                                    if(!OverTimedList.get(index1).equals(saved_data)){
-                                        index++;
-                                        NotificationSomethings();
-                                        Log.e("SUCCESS", "TRUE");
-                                    }
-                                }
-                                sleep(10000);
-                                handler.postDelayed(this,5000);
-                            }
+                                index++;
+                                NotificationSomethings();
+                                Log.e("SUCCESS", "TRUE");
                         }else{
                             Log.e("ERROR", "THERE IS NO TRUE");
-                            sleep(10000);
-                            handler.postDelayed(this,5000);
                         }
                     }
                 } catch (Exception e) {
