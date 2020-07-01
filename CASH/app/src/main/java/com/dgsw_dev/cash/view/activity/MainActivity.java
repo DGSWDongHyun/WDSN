@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     ImageView img;
     Date date;
     SimpleDateFormat simpleDateFormat;
-    public final static int FULLTIME_OF_DAY = 24;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         returnTimes(date, simpleDateFormat);
 
+        Toast.makeText(getApplicationContext(), String.valueOf(list.size()), Toast.LENGTH_LONG).show();
         for (int index = 0; index < list.size(); index++) {
             adapter.addItem(list.get(index).getSubjectName(), list.get(index).getToTime(), list.get(index).getDetail_time(), list.get(index).getOverTime());
             adapter.notifyDataSetChanged();
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         Gson gson = new Gson();
         String json = gson.toJson(Subject);
         prefsEditor.putString("Subject_Data", json);
-        prefsEditor.commit();
+        prefsEditor.apply();
     }
     public static ArrayList<DataSubject> loadSharedPreferencesList(Context context) {
         ArrayList<DataSubject> data = new ArrayList<DataSubject>();
@@ -173,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             }.getType();
             data = gson.fromJson(json, type);
         }
+        Log.e("LOADED!", "COMPLETED LOAD. data : "+String.valueOf(data.size()));
         return data;
     }
     @TargetApi(Build.VERSION_CODES.M)

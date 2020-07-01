@@ -1,13 +1,18 @@
 package com.dgsw_dev.cash.view.service;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -28,16 +33,24 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.NotificationCompat;
 
 import com.dgsw_dev.cash.R;
 import com.dgsw_dev.cash.data.DataSubject;
+import com.dgsw_dev.cash.view.activity.MainActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import static java.lang.Thread.sleep;
 
 public class Service_Overlay extends Service implements View.OnTouchListener {
     WindowManager wm;
@@ -46,6 +59,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     int prev_Width, prev_Height;
     Animation fab_open, fab_close;
     FloatingActionButton fab_opener,fab;
+    int index = 0 ;
     CardView cardView, today, tomrrow, after_tomorrow, add;
     WindowManager.LayoutParams params;
     TimePicker times;
@@ -53,6 +67,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     Boolean openFlag = false;
     TextView tv;
     Button button_select;
+    public static final String NOTIFICATION_CHANNEL_ID = "10001";
     String dialog = "";
 
     public Service_Overlay() {
@@ -67,6 +82,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     public void onCreate() {
         setTheme(R.style.AppTheme);
         super.onCreate();
+        onServiceThread();
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
 
@@ -85,7 +101,6 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             mView = inflate.inflate(R.layout.overlay_service, null);
 
             init_Layout();
-
             wm.addView(mView, params);
         }else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
           params = new WindowManager.LayoutParams(
@@ -100,7 +115,6 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             mView = inflate.inflate(R.layout.overlay_service, null);
 
             init_Layout();
-
             wm.addView(mView, params);
         }
 
@@ -266,26 +280,37 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         dialog = content;
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void init_dialog(){
+    public void init_dialog()  {
         list = loadSharedPreferencesList(getApplicationContext());
         today.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         tomrrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         after_tomorrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
-        list.add(new DataSubject(button_select.getText().toString(), dialog, " ~ "+times.getHour()+":"+times.getMinute()+"까지",false));
+        try{
+            Date CurrentFormat = new SimpleDateFormat("HH:mm").parse(new Date(System.currentTimeMillis()).toString());
+            list.add(new DataSubject(button_select.getText().toString(), dialog, " ~ "+times.getHour()+":"+times.getMinute()+"까지",false));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         Toast.makeText(getApplicationContext(), "과제 등록됨 : "+button_select.getText()+", 제출 기한 : "+dialog+ " ~"+times.getHour()+":"+times.getMinute()+"까지",Toast.LENGTH_LONG).show();;
         saveSharedPreferencesList(getApplicationContext(), list);
 
         text_changed(tv, "종료일을 선택해주세요.");
         button_select.setText("과제 선택하기");
+
     }
     public static void saveSharedPreferencesList(Context context, ArrayList<DataSubject> Subject) {
-        SharedPreferences mPrefs = context.getSharedPreferences("pref",context.MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(Subject);
-        prefsEditor.putString("Subject_Data", json);
-        prefsEditor.commit();
+        try{
+            SharedPreferences mPrefs = context.getSharedPreferences("pref",context.MODE_PRIVATE);
+            SharedPreferences.Editor prefsEditor = mPrefs.edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(Subject);
+            prefsEditor.putString("Subject_Data", json);
+            prefsEditor.apply();
+            Log.e("SAVE COMPLETED", "SAVED!");
+        }catch (Exception e){
+            Log.e("Error", e.getMessage());
+        }
     }
     public static ArrayList<DataSubject> loadSharedPreferencesList(Context context) {
         ArrayList<DataSubject> data = new ArrayList<DataSubject>();
@@ -299,10 +324,70 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             }.getType();
             data = gson.fromJson(json, type);
         }
+        Log.e("LOADED!", "COMPLETED LOAD. data : "+String.valueOf(data.size()));
         return data;
     }
 
     public MenuInflater getMenuInflater() {
         return new MenuInflater(this);
     }
+
+    public void onServiceThread(){
+        final Handler handler = new Handler();
+        list = loadSharedPreferencesList(getApplicationContext());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (int size = 0; size < list.size(); size++) {
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        },5000);
+
+    }
+    public void NotificationSomethings() {
+
+
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK) ;
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,  PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground)) //BitMap 이미지 요구
+                .setContentTitle("과제 종료 시간이 초과된 과제가 있습니다.")
+                .setContentText(index +"건의 종료 시간이 초과된 과제가 있습니다.")
+                // 더 많은 내용이라서 일부만 보여줘야 하는 경우 아래 주석을 제거하면 setContentText에 있는 문자열 대신 아래 문자열을 보여줌
+                //.setStyle(new NotificationCompat.BigTextStyle().bigText("더 많은 내용을 보여줘야 하는 경우..."))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent) // 사용자가 노티피케이션을 탭시 ResultActivity로 이동하도록 설정
+                .setAutoCancel(true);
+
+        //OREO API 26 이상에서는 채널 필요
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            builder.setSmallIcon(R.drawable.ic_launcher_foreground); //mipmap 사용시 Oreo 이상에서 시스템 UI 에러남
+            CharSequence channelName  = "과제 종료 시간이 초과된 과제가 있습니다.";
+            String description = "얼른 확인하세요!";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName , importance);
+            channel.setDescription(description);
+
+            // 노티피케이션 채널을 시스템에 등록
+            assert notificationManager != null;
+            notificationManager.createNotificationChannel(channel);
+
+        }else builder.setSmallIcon(R.mipmap.ic_launcher); // Oreo 이하에서 mipmap 사용하지 않으면 Couldn't create icon: StatusBarIcon 에러남
+
+        assert notificationManager != null;
+        notificationManager.notify(1234, builder.build()); // 고유숫자로 노티피케이션 동작시킴
+
+    }
+
 }

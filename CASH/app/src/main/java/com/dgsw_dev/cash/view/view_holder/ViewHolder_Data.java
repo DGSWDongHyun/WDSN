@@ -11,12 +11,18 @@ import android.widget.TextView;
 import com.dgsw_dev.cash.R;
 import com.dgsw_dev.cash.data.DataSubject;
 
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 public class ViewHolder_Data extends BaseAdapter {
     private ArrayList<DataSubject> listViewItemList = new ArrayList<DataSubject>() ;
+
+    long now = System.currentTimeMillis();
+    Date date = new Date(now);
+
 
     public ViewHolder_Data() {
 
@@ -71,7 +77,9 @@ public class ViewHolder_Data extends BaseAdapter {
 
     // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
     public void addItem(String title, String time , String Detail, Boolean task_over) {
+        SimpleDateFormat sdfNow = new SimpleDateFormat("HH:mm");
         DataSubject item = new DataSubject(title, time, Detail, task_over);
+
 
         item.setSubjectName(title);
         item.setToTime("제출 기한 : "+time+", ~"+Detail+" 까지");
