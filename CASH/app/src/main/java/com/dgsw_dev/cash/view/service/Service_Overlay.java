@@ -44,22 +44,23 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import static java.lang.Thread.sleep;
 
 public class Service_Overlay extends Service implements View.OnTouchListener {
+    private static final String NOTIFICATION_CHANNEL_ID = "1234";
     WindowManager wm;
     private float prevY;
+    int index = 0;
     View mView;
     int prev_Width, prev_Height;
     Animation fab_open, fab_close;
     FloatingActionButton fab_opener,fab;
-    int index = 0 ;
     CardView cardView, today, tomrrow, after_tomorrow, add;
     WindowManager.LayoutParams params;
     TimePicker times;
@@ -67,9 +68,8 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     Boolean openFlag = false;
     TextView tv;
     Button button_select;
-    public static final String NOTIFICATION_CHANNEL_ID = "10001";
     String dialog = "";
-
+    ArrayList<Date> OverTimedList = new ArrayList<>();
     public Service_Overlay() {
     }
 
@@ -82,7 +82,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     public void onCreate() {
         setTheme(R.style.AppTheme);
         super.onCreate();
-        onServiceThread();
+        onThreadService();
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
 
@@ -101,6 +101,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             mView = inflate.inflate(R.layout.overlay_service, null);
 
             init_Layout();
+
             wm.addView(mView, params);
         }else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
           params = new WindowManager.LayoutParams(
@@ -115,6 +116,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             mView = inflate.inflate(R.layout.overlay_service, null);
 
             init_Layout();
+
             wm.addView(mView, params);
         }
 
@@ -280,59 +282,36 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         dialog = content;
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void init_dialog()  {
+    public void init_dialog(){
         list = loadSharedPreferencesList(getApplicationContext());
         today.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         tomrrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         after_tomorrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
-        try{
-            Date CurrentFormat = new SimpleDateFormat("HH:mm").parse(new Date(System.currentTimeMillis()).toString());
-            list.add(new DataSubject(button_select.getText().toString(), dialog, " ~ "+times.getHour()+":"+times.getMinute()+"까지",false));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        Toast.makeText(getApplicationContext(), "과제 등록됨 : "+button_select.getText()+", 제출 기한 : "+dialog+ " ~"+times.getHour()+":"+times.getMinute()+"까지",Toast.LENGTH_LONG).show();;
+        String year = new SimpleDateFormat("yyyy").format(new Date(System.currentTimeMillis()));
+        String month = new SimpleDateFormat("MM").format(new Date(System.currentTimeMillis()));
+        String day = new SimpleDateFormat("dd").format(new Date(System.currentTimeMillis()));
+
+        Calendar calendar = new GregorianCalendar(Integer.parseInt(year),
+                Integer.parseInt(month),
+                Integer.parseInt(day),
+                times.getHour(),
+                times.getMinute());
+
+        long time = calendar.getTimeInMillis();
+
+        String simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(time);
+
+        list.add(new DataSubject(button_select.getText().toString(), dialog, " ~ "+times.getHour()+":"+times.getMinute()+"까지",false, simpleDateFormat));
+
+        Toast.makeText(getApplicationContext(), "과제 등록됨 : "+button_select.getText()+", 제출 기한 : "+dialog+ " ~"+times.getHour()+":"+times.getMinute()+"까지",Toast.LENGTH_LONG).show();
+        Log.e("COMPLETED : ",simpleDateFormat);
         saveSharedPreferencesList(getApplicationContext(), list);
 
         text_changed(tv, "종료일을 선택해주세요.");
         button_select.setText("과제 선택하기");
-
     }
-    public static void saveSharedPreferencesList(Context context, ArrayList<DataSubject> Subject) {
-        try{
-            SharedPreferences mPrefs = context.getSharedPreferences("pref",context.MODE_PRIVATE);
-            SharedPreferences.Editor prefsEditor = mPrefs.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(Subject);
-            prefsEditor.putString("Subject_Data", json);
-            prefsEditor.apply();
-            Log.e("SAVE COMPLETED", "SAVED!");
-        }catch (Exception e){
-            Log.e("Error", e.getMessage());
-        }
-    }
-    public static ArrayList<DataSubject> loadSharedPreferencesList(Context context) {
-        ArrayList<DataSubject> data = new ArrayList<DataSubject>();
-        SharedPreferences mPrefs = context.getSharedPreferences("pref", context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = mPrefs.getString("Subject_Data", "");
-        if (json.isEmpty()) {
-            data = new ArrayList<DataSubject>();
-        } else {
-            Type type = new TypeToken<ArrayList<DataSubject>>() {
-            }.getType();
-            data = gson.fromJson(json, type);
-        }
-        Log.e("LOADED!", "COMPLETED LOAD. data : "+String.valueOf(data.size()));
-        return data;
-    }
-
-    public MenuInflater getMenuInflater() {
-        return new MenuInflater(this);
-    }
-
-    public void onServiceThread(){
+    public void onThreadService(){
         final Handler handler = new Handler();
         list = loadSharedPreferencesList(getApplicationContext());
         handler.postDelayed(new Runnable() {
@@ -340,9 +319,32 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             public void run() {
                 try {
                     for (int size = 0; size < list.size(); size++) {
+                        Date current_data = new Date(System.currentTimeMillis());
+                        Date saved_data = new SimpleDateFormat("yyyy/MM/dd HH:mm").parse(list.get(size).getDate());
 
+                        if(saved_data.after(current_data)){
+                            for (int size1 = 0; size1 < list.size(); size1++) {
+                                OverTimedList.add(saved_data);
+                                Log.e("SUCCESS", saved_data.toString());
+                                for(int index1 = 0; index1 < OverTimedList.size(); index1++){
+                                    Log.e("SUCCESS", OverTimedList.get(index1).toString());
+                                    if(!OverTimedList.get(index1).equals(saved_data)){
+                                        index++;
+                                        NotificationSomethings();
+                                        Log.e("SUCCESS", "TRUE");
+                                    }
+                                }
+                                sleep(10000);
+                                handler.postDelayed(this,5000);
+                            }
+                        }else{
+                            Log.e("ERROR", "THERE IS NO TRUE");
+                            sleep(10000);
+                            handler.postDelayed(this,5000);
+                        }
                     }
                 } catch (Exception e) {
+                    Log.e("ERROR", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -390,4 +392,30 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
 
     }
 
+    public static void saveSharedPreferencesList(Context context, ArrayList<DataSubject> Subject) {
+        SharedPreferences mPrefs = context.getSharedPreferences("pref",context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(Subject);
+        prefsEditor.putString("Subject_Data", json);
+        prefsEditor.commit();
+    }
+    public static ArrayList<DataSubject> loadSharedPreferencesList(Context context) {
+        ArrayList<DataSubject> data = new ArrayList<DataSubject>();
+        SharedPreferences mPrefs = context.getSharedPreferences("pref", context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("Subject_Data", "");
+        if (json.isEmpty()) {
+            data = new ArrayList<DataSubject>();
+        } else {
+            Type type = new TypeToken<ArrayList<DataSubject>>() {
+            }.getType();
+            data = gson.fromJson(json, type);
+        }
+        return data;
+    }
+
+    public MenuInflater getMenuInflater() {
+        return new MenuInflater(this);
+    }
 }
