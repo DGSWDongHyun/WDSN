@@ -57,7 +57,8 @@
                             android:text="누락됨"
                             android:textColor="@android:color/holo_red_dark"
                             android:textSize="6sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 

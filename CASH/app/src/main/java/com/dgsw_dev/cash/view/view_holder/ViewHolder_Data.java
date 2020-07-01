@@ -52,15 +52,16 @@ public class ViewHolder_Data extends BaseAdapter {
 
         TextView subject = convertView.findViewById(R.id.subject);
         TextView times = convertView.findViewById(R.id.time);
-        TextView overtime = convertView.findViewById(R.id.overtime);
 
         subject.setText(listViewItem.getSubjectName());
         times.setText(listViewItem.getDetail_time());
-        if(!listViewItem.getOverTime()){
+
+        TextView overtime = convertView.findViewById(R.id.overtime);
+
+        if(listViewItem.getOverTime() != false){
             overtime.setVisibility(View.VISIBLE);
-        }else{
-            overtime.setVisibility(View.GONE);
         }
+
 
         return convertView;
     }
@@ -84,7 +85,6 @@ public class ViewHolder_Data extends BaseAdapter {
         item.setSubjectName(title);
         item.setToTime("제출 기한 : "+time+", ~"+Detail+" 까지");
         item.setOverTime(task_over);
-
 
         listViewItemList.add(item);
     }

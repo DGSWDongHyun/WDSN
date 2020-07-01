@@ -321,23 +321,30 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                     for (int size = 0; size < list.size(); size++) {
                         Date current_data = new Date(System.currentTimeMillis());
                         Date saved_data = new SimpleDateFormat("yyyy/MM/dd HH:mm").parse(list.get(size).getDate());
-
-                        if(saved_data.after(current_data) && list.get(index).getOverTime()){
+                        if(!list.isEmpty()){
+                            if(saved_data.after(current_data) && list.get(index).getOverTime() != true){
                                 list.get(index).setOverTime(true);
                                 Log.e("SUCCESS", saved_data.toString());
                                 index++;
                                 NotificationSomethings();
                                 Log.e("SUCCESS", "TRUE");
+                                handler.postDelayed(this, 20000);
+                            }else{
+                                Log.e("ERROR", "THERE IS NO TRUE");
+                                handler.postDelayed(this, 120000);
+                            }
                         }else{
-                            Log.e("ERROR", "THERE IS NO TRUE");
+                            Log.e("ERROR", "LIST IS EMPTY");
+                            handler.postDelayed(this, 120000);
                         }
                     }
                 } catch (Exception e) {
                     Log.e("ERROR", e.getMessage());
                     e.printStackTrace();
                 }
+                index = 0;
             }
-        },5000);
+        },10000);
 
     }
     public void NotificationSomethings() {
@@ -352,7 +359,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground)) //BitMap 이미지 요구
                 .setContentTitle("과제 종료 시간이 초과된 과제가 있습니다.")
-                .setContentText(index +"건의 종료 시간이 초과된 과제가 있습니다.")
+                .setContentText(index +" 건의 종료 시간이 초과된 과제가 있습니다.")
                 // 더 많은 내용이라서 일부만 보여줘야 하는 경우 아래 주석을 제거하면 setContentText에 있는 문자열 대신 아래 문자열을 보여줌
                 //.setStyle(new NotificationCompat.BigTextStyle().bigText("더 많은 내용을 보여줘야 하는 경우..."))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
