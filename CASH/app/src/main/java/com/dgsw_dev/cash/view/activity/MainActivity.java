@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkPermission();
-        adapter = new ViewHolder_Data();
+        adapter = new ViewHolder_Data(getApplicationContext());
         list = loadSharedPreferencesList(getApplicationContext());
 
         // 리스트뷰 참조 및 Adapter달기

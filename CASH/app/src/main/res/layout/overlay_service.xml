@@ -280,7 +280,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:src="@drawable/write_icon"
+                android:src="@drawable/ic_create_24px"
                 app:backgroundTint="@color/White_fab"
                 app:fabSize="mini" />
 
@@ -293,7 +293,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:src="@drawable/finish_icon"
+                android:src="@drawable/ic_close_24px"
                 app:backgroundTint="@color/White_fab"
                 app:fabSize="mini" />
         </LinearLayout>

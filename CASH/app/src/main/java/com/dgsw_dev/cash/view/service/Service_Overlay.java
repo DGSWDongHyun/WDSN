@@ -26,6 +26,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -59,7 +60,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     int index = 0;
     View mView;
     int prev_Width, prev_Height;
-    Animation fab_open, fab_close;
+    Animation fab_open, fab_close, fab_rotate , fab_backward;
     FloatingActionButton fab_opener,fab;
     CardView cardView, today, tomrrow, after_tomorrow, add;
     WindowManager.LayoutParams params;
@@ -69,7 +70,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     TextView tv;
     Button button_select;
     String dialog = "";
-    ArrayList<Date> OverTimedList = new ArrayList<>();
+
     public Service_Overlay() {
     }
 
@@ -85,6 +86,8 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         onThreadService();
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         fab_close = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fab_close);
+        fab_rotate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_forward);
+        fab_backward = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_backward);
 
         LayoutInflater inflate = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -119,7 +122,6 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
 
             wm.addView(mView, params);
         }
-
     }
     public int onStartCommand(Intent intent, int flags, int startId) {
         return Service.START_REDELIVER_INTENT;
@@ -140,6 +142,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     public void anim() {
 
         if (openFlag) {
+            fab_opener.startAnimation(fab_backward);
             fab.startAnimation(fab_close);
             cardView.startAnimation(fab_close);
             new Handler().postDelayed(new Runnable()
@@ -155,6 +158,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             openFlag = false;
 
         } else {
+            fab_opener.startAnimation(fab_rotate);
             fab.startAnimation(fab_open);
             fab.setVisibility(View.VISIBLE);
             cardView.startAnimation(fab_open);
@@ -209,8 +213,8 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         button_select = mView.findViewById(R.id.submenu);
         times = mView.findViewById(R.id.time_picker);
 
-        prev_Width = fab.getWidth();
-        prev_Height = fab.getHeight();
+        prev_Width = fab_opener.getWidth();
+        prev_Height = fab_opener.getHeight();
 
 
 
@@ -322,20 +326,20 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                         Date current_data = new Date(System.currentTimeMillis());
                         Date saved_data = new SimpleDateFormat("yyyy/MM/dd HH:mm").parse(list.get(size).getDate());
                         if(!list.isEmpty()){
-                            if(saved_data.after(current_data) && list.get(index).getOverTime() != true){
+                            if(current_data.before(saved_data) && list.get(index).getOverTime() != true){
                                 list.get(index).setOverTime(true);
                                 Log.e("SUCCESS", saved_data.toString());
                                 index++;
                                 NotificationSomethings();
                                 Log.e("SUCCESS", "TRUE");
-                                handler.postDelayed(this, 20000);
+                                handler.postDelayed(this, 60000);
                             }else{
                                 Log.e("ERROR", "THERE IS NO TRUE");
-                                handler.postDelayed(this, 120000);
+                                handler.postDelayed(this, 60000);
                             }
                         }else{
                             Log.e("ERROR", "LIST IS EMPTY");
-                            handler.postDelayed(this, 120000);
+                            handler.postDelayed(this, 60000);
                         }
                     }
                 } catch (Exception e) {

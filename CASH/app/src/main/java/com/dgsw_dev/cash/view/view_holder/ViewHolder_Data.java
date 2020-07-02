@@ -1,6 +1,7 @@
 package com.dgsw_dev.cash.view.view_holder;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,18 +11,21 @@ import android.widget.TextView;
 
 import com.dgsw_dev.cash.R;
 import com.dgsw_dev.cash.data.DataSubject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class ViewHolder_Data extends BaseAdapter {
     private ArrayList<DataSubject> listViewItemList = new ArrayList<DataSubject>() ;
-
-    public ViewHolder_Data() {
-
+    Context mContext;
+    public ViewHolder_Data(Context mContext) {
+        this.mContext = mContext;
     }
 
     // Adapter에 사용되는 데이터의 개수를 리턴. : 필수 구현
@@ -58,12 +62,31 @@ public class ViewHolder_Data extends BaseAdapter {
 
         TextView overtime = convertView.findViewById(R.id.overtime);
 
-        if(listViewItem.getOverTime() != false){
-            overtime.setVisibility(View.VISIBLE);
+
+        ArrayList<DataSubject> list = loadSharedPreferencesList(mContext);
+
+        for(int index = 0; index < list.size(); index++){
+            if(list.get(index).getOverTime() != false){
+                overtime.setVisibility(View.VISIBLE);
+            }
         }
 
 
         return convertView;
+    }
+    public static ArrayList<DataSubject> loadSharedPreferencesList(Context context) {
+        ArrayList<DataSubject> data = new ArrayList<DataSubject>();
+        SharedPreferences mPrefs = context.getSharedPreferences("pref", context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString("Subject_Data", "");
+        if (json.isEmpty()) {
+            data = new ArrayList<DataSubject>();
+        } else {
+            Type type = new TypeToken<ArrayList<DataSubject>>() {
+            }.getType();
+            data = gson.fromJson(json, type);
+        }
+        return data;
     }
 
     // 지정한 위치(position)에 있는 데이터와 관계된 아이템(row)의 ID를 리턴. : 필수 구현
