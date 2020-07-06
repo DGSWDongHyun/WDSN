@@ -295,9 +295,11 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
 
 
 
-        String year = new SimpleDateFormat("yyyy").format(new Date(System.currentTimeMillis()));
-        String month = new SimpleDateFormat("MM").format(new Date(System.currentTimeMillis()));
-        String day = new SimpleDateFormat("dd").format(new Date(System.currentTimeMillis()));
+        String year = new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
+        String month = new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
+        String day = new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
+
+        Log.e("ll",year + "/"+ month + "/" + day);
 
         Calendar calendar = new GregorianCalendar(Integer.parseInt(year),
                 Integer.parseInt(month),
@@ -316,7 +318,8 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             calendar.add(Calendar.DAY_OF_WEEK, 2);
             time = calendar.getTimeInMillis();
         }
-
+        calendar.add(Calendar.MONTH, -1);
+        time = calendar.getTimeInMillis();
         String simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(time);
 
         list.add(new DataSubject(button_select.getText().toString(), dialog, " ~ "+times.getHour()+":"+times.getMinute()+"까지",false, simpleDateFormat));
@@ -342,7 +345,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                             assert saved_data != null;
                             Log.e("LOG", list.get(size).getOverTime()+"\n");
                             int compare = current_data.compareTo(saved_data);
-                            if(compare < 0 && !list.get(index).getOverTime()){
+                            if(compare > 0 && !list.get(index).getOverTime()){
                                 list.get(index).setOverTime(true);
                                 Log.e("LOG", list.get(size).getOverTime()+"\n");
                                 saveSharedPreferencesList(getApplicationContext(), list);

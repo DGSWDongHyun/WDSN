@@ -62,9 +62,11 @@ public class ViewHolder_Data extends BaseAdapter {
 
         TextView overtime = convertView.findViewById(R.id.overtime);
 
-            if(listViewItem.getOverTime() != false){
+        for(int index = 0; index < listViewItemList.size(); index++){
+            if(listViewItemList.get(index).getOverTime() == true){
                 overtime.setVisibility(View.VISIBLE);
             }
+        }
 
         return convertView;
     }
