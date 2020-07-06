@@ -62,15 +62,9 @@ public class ViewHolder_Data extends BaseAdapter {
 
         TextView overtime = convertView.findViewById(R.id.overtime);
 
-
-        ArrayList<DataSubject> list = loadSharedPreferencesList(mContext);
-
-        for(int index = 0; index < list.size(); index++){
-            if(list.get(index).getOverTime() != false){
+            if(listViewItem.getOverTime() != false){
                 overtime.setVisibility(View.VISIBLE);
             }
-        }
-
 
         return convertView;
     }

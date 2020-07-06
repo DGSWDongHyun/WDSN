@@ -79,6 +79,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                             public void onDismiss(ListView listView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
                                     list.remove(position);
+                                    if(list.isEmpty()){
+                                        adapter.clearAll();
+                                    }
                                 }
                                 saveSharedPreferencesList(getApplicationContext(),list);
                                 list = loadSharedPreferencesList(getApplicationContext());
@@ -112,8 +115,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         format = new SimpleDateFormat ( "HH");
 
         int hour = Integer.parseInt(format.format(time));
-
-        Toast.makeText(getApplicationContext(), String.valueOf(hour), Toast.LENGTH_LONG).show();
 
         if(hour > 6 && hour <= 12){
             time_now.setText("아침");

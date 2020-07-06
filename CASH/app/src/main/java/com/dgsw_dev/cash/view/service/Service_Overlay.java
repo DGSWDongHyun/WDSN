@@ -70,6 +70,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     TextView tv;
     Button button_select;
     String dialog = "";
+    long time;
 
     public Service_Overlay() {
     }
@@ -224,7 +225,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         fab.setClickable(false);
 
         add.setOnClickListener(v -> {
-            init_dialog();
+            init_dialog(dialog);
             anim();
         });
         button_select.setOnClickListener(v->{
@@ -286,11 +287,13 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         dialog = content;
     }
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void init_dialog(){
+    public void init_dialog(String content){
         list = loadSharedPreferencesList(getApplicationContext());
         today.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         tomrrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
         after_tomorrow.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+
 
         String year = new SimpleDateFormat("yyyy").format(new Date(System.currentTimeMillis()));
         String month = new SimpleDateFormat("MM").format(new Date(System.currentTimeMillis()));
@@ -302,7 +305,17 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                 times.getHour(),
                 times.getMinute());
 
-        long time = calendar.getTimeInMillis();
+        if(content.equals("오늘")){
+             time = calendar.getTimeInMillis();
+        }else if(content.equals("내일")){
+
+            calendar.add(Calendar.DAY_OF_WEEK, 1);
+            time = calendar.getTimeInMillis();
+
+        }else if(content.equals("모레")){
+            calendar.add(Calendar.DAY_OF_WEEK, 2);
+            time = calendar.getTimeInMillis();
+        }
 
         String simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(time);
 
@@ -326,8 +339,13 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                         Date current_data = new Date(System.currentTimeMillis());
                         Date saved_data = new SimpleDateFormat("yyyy/MM/dd HH:mm").parse(list.get(size).getDate());
                         if(!list.isEmpty()){
-                            if(current_data.before(saved_data) && list.get(index).getOverTime() != true){
+                            assert saved_data != null;
+                            Log.e("LOG", list.get(size).getOverTime()+"\n");
+                            int compare = current_data.compareTo(saved_data);
+                            if(compare < 0 && !list.get(index).getOverTime()){
                                 list.get(index).setOverTime(true);
+                                Log.e("LOG", list.get(size).getOverTime()+"\n");
+                                saveSharedPreferencesList(getApplicationContext(), list);
                                 Log.e("SUCCESS", saved_data.toString());
                                 index++;
                                 NotificationSomethings();
