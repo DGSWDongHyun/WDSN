@@ -6,7 +6,7 @@
 
 1. Service를 통한 Overlay 안드로이드 어플리케이션. [:white_check_mark:] - 100%
 2. Toss 기반을 디자인으로 한 10 ~ 20대에게 평범하고 일상적인 UI / UX 디자인 제공. [:white_check_mark:] - 50%
-3. Service overlay를 통한 백그라운드 작업 활성화. - 구현중 ..
+3. Service overlay를 통한 백그라운드 작업 활성화. - [:white_check_mark:] - 20 %
 - 추가 중 -
 
 :speech_balloon: 본인 블로그 https://blog.naver.com/ydh665566
