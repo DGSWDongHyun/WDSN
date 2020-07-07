@@ -48,6 +48,7 @@ public class ViewHolder_Data extends BaseAdapter {
 
         // 화면에 표시될 View(Layout이 inflate된)으로부터 위젯에 대한 참조 획득
 
+        listViewItemList = loadSharedPreferencesList(mContext);
 
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
         DataSubject listViewItem = listViewItemList.get(position);
@@ -71,6 +72,14 @@ public class ViewHolder_Data extends BaseAdapter {
         }
 
         return convertView;
+    }
+    public static void saveSharedPreferencesList(Context context, ArrayList<DataSubject> Subject) {
+        SharedPreferences mPrefs = context.getSharedPreferences("pref",context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(Subject);
+        prefsEditor.putString("Subject_Data", json);
+        prefsEditor.commit();
     }
     public static ArrayList<DataSubject> loadSharedPreferencesList(Context context) {
         ArrayList<DataSubject> data = new ArrayList<DataSubject>();
@@ -106,6 +115,7 @@ public class ViewHolder_Data extends BaseAdapter {
         item.setSubjectName(title);
         item.setToTime("제출 기한 : "+time+", ~"+Detail+" 까지");
         item.setOverTime(task_over);
+
 
         listViewItemList.add(item);
     }
