@@ -56,13 +56,14 @@ import static java.lang.Thread.sleep;
 public class Service_Overlay extends Service implements View.OnTouchListener {
     private static final String NOTIFICATION_CHANNEL_ID = "1234";
     WindowManager wm;
-    private float prevY;
+    private float prevX;
     int index = 0;
     View mView;
     int prev_Width, prev_Height;
     Animation fab_open, fab_close, fab_rotate , fab_backward;
-    FloatingActionButton fab_opener,fab;
-    CardView cardView, today, tomrrow, after_tomorrow, add;
+    FloatingActionButton fab;
+    LinearLayout opening;
+    CardView cardView, today, tomrrow, after_tomorrow, add,color;
     WindowManager.LayoutParams params;
     TimePicker times;
     ArrayList<DataSubject> list = new ArrayList<>();
@@ -101,7 +102,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                             | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                             | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
                     PixelFormat.TRANSLUCENT);
-            params.gravity = Gravity.RIGHT | Gravity.TOP;
+            params.gravity = Gravity.CENTER | Gravity.TOP;
             mView = inflate.inflate(R.layout.overlay_service, null);
 
             init_Layout();
@@ -116,7 +117,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
                             | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                             | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
                     PixelFormat.TRANSLUCENT);
-            params.gravity = Gravity.RIGHT | Gravity.TOP;
+            params.gravity = Gravity.CENTER | Gravity.TOP;
             mView = inflate.inflate(R.layout.overlay_service, null);
 
             init_Layout();
@@ -143,7 +144,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     public void anim() {
 
         if (openFlag) {
-            fab_opener.startAnimation(fab_backward);
+            color.setCardBackgroundColor(getResources().getColor(R.color.colorPrimary));
             fab.startAnimation(fab_close);
             cardView.startAnimation(fab_close);
             new Handler().postDelayed(new Runnable()
@@ -159,7 +160,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             openFlag = false;
 
         } else {
-            fab_opener.startAnimation(fab_rotate);
+            color.setCardBackgroundColor(getResources().getColor(R.color.green));
             fab.startAnimation(fab_open);
             fab.setVisibility(View.VISIBLE);
             cardView.startAnimation(fab_open);
@@ -174,17 +175,17 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: // 처음 위치를 기억해둔다.
-                prevY = event.getRawY();
+                prevX = event.getRawX();
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                float rawY = event.getRawY(); // 절대 Y 좌표값을 가져온다.
+                float rawX = event.getRawX();
 
                 // 이동한 위치에서 처음 위치를 빼서 이동한 거리를 구한다.
-                float y = rawY - prevY;
+                float x = rawX - prevX;
 
-                setCoordinateUpdate(y);
-                prevY = rawY;
+                setCoordinateUpdate(x);
+                prevX = rawX;
                 break;
         }
         return false;
@@ -192,11 +193,11 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
 
     /**
      * 이동한 거리를 x, y를 넘겨 LayoutParams에 갱신한다.
-     * @param y
+     * @param x
      */
-    private void setCoordinateUpdate(float y) {
+    private void setCoordinateUpdate(float x) {
         if (params != null) {
-            params.y += (int) y;
+            params.x += (int) x;
 
             wm.updateViewLayout(mView, params);
         }
@@ -204,7 +205,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void init_Layout(){
         fab = mView.findViewById(R.id.close_fab);
-        fab_opener = mView.findViewById(R.id.fab_open);
+        opening = mView.findViewById(R.id.opening);
         cardView = mView.findViewById(R.id.card_view);
         today = mView.findViewById(R.id.today_card);
         tomrrow = mView.findViewById(R.id.tomorrow_card);
@@ -213,9 +214,7 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
         add = mView.findViewById(R.id.add_card);
         button_select = mView.findViewById(R.id.submenu);
         times = mView.findViewById(R.id.time_picker);
-
-        prev_Width = fab_opener.getWidth();
-        prev_Height = fab_opener.getHeight();
+        color = mView.findViewById(R.id.open);
 
 
 
@@ -248,11 +247,11 @@ public class Service_Overlay extends Service implements View.OnTouchListener {
             anim();
             stopSelf();
         });
-        fab_opener.setOnLongClickListener(v->{
-            fab_opener.setOnTouchListener(this);
+        opening.setOnLongClickListener(v->{
+            opening.setOnTouchListener(this);
             return false;
         });
-        fab_opener.setOnClickListener(v->{
+        opening.setOnClickListener(v->{
             anim();
         });
         today.setOnClickListener(v->{

@@ -65,9 +65,8 @@ public class ViewHolder_Data extends BaseAdapter {
 
         for(int index = 0; index < listViewItemList.size(); index++){
             if(listViewItemList.get(index).getOverTime() == true){
-                overtime.setVisibility(View.VISIBLE);
-            }else{
-                overtime.setVisibility(View.GONE);
+                times.setText("누락됨");
+                times.setTextColor(convertView.getResources().getColor(R.color.red));
             }
         }
 

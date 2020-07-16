@@ -12,11 +12,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.dgsw_dev.cash.R;
 import com.dgsw_dev.cash.data.DataSubject;
 import com.dgsw_dev.cash.view.service.Service_Overlay;
@@ -40,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     ImageView img;
     Date date;
     SimpleDateFormat simpleDateFormat;
+    LinearLayout sub_loading;
     public final static int FULLTIME_OF_DAY = 24;
 
     @Override
@@ -49,12 +55,30 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         checkPermission();
         adapter = new ViewHolder_Data(getApplicationContext());
         list = loadSharedPreferencesList(getApplicationContext());
+        sub_loading = findViewById(R.id.sub_loading);
 
-        // 리스트뷰 참조 및 Adapter달기
+        // 리스트뷰 참조 및 Adapter 달기
         listview = (ListView) findViewById(R.id.list_s);
         swipe = findViewById(R.id.swipe);
         swipe.setOnRefreshListener(this);
         listview.setAdapter(adapter);
+
+        LottieAnimationView animationView = (LottieAnimationView) findViewById(R.id.animation_view);
+        animationView.setAnimation("book_stack.json");
+        animationView.loop(true);
+        animationView.playAnimation();
+
+        new Handler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                Animation animation = new AlphaAnimation(1, 0);
+                animation.setDuration(700);
+                sub_loading.setVisibility(View.GONE);
+                sub_loading.setAnimation(animation);
+            }
+        }, 4000);
 
         time_now = findViewById(R.id.time_now);
         img = findViewById(R.id.time_img);
