@@ -14,9 +14,9 @@
         <service
             android:name=".view.service.Service_Overlay"
             android:enabled="true"
-            android:windowSoftInputMode="adjustResize"
+            android:exported="true"
             android:permission="android.permission.SYSTEM_ALERT_WINDOW"
-            android:exported="true"></service>
+            android:windowSoftInputMode="adjustResize" />
 
         <activity android:name=".view.activity.MainActivity">
             <intent-filter>

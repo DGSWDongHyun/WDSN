@@ -1,6 +1,7 @@
 package com.dgsw_dev.cash.view.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.WindowDecorActionBar;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.TargetApi;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         animationView.setAnimation("book_stack.json");
         animationView.loop(true);
         animationView.playAnimation();
+        sub_loading.setVisibility(View.VISIBLE);
 
         new Handler().postDelayed(new Runnable()
         {
